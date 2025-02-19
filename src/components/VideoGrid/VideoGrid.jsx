@@ -7,15 +7,27 @@ import {
   Box,
   Grid,
   IconButton,
-  CardActions
+  CardActions,
+  CircularProgress 
 } from '@mui/material';
 import { Launch } from '@mui/icons-material';
 
 const VideoGrid = ({ videos, loading, hasMore, onLoadMore }) => {
+  // Ensure videos is always an array
+  const videoArray = Array.isArray(videos) ? videos : [];
+
+  if (loading && videoArray.length === 0) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ p: 4 }}>
       <Grid container spacing={3}>
-        {videos.map((video) => (
+        {videoArray.map((video) => (
           <Grid item xs={12} md={6} lg={4} key={video.id}>
             <Card elevation={3} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent>
@@ -23,7 +35,13 @@ const VideoGrid = ({ videos, loading, hasMore, onLoadMore }) => {
                   {video.title}
                 </Typography>
                 <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-                  {video.channel_name} • {video.upload_date}
+                  {video.channelName} • {new Date(video.uploadDate).toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                  })}
                 </Typography>
               </CardContent>
               <CardActions sx={{ marginTop: 'auto' }}>
